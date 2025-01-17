@@ -1,4 +1,4 @@
-# Project
+# FAMUnite
 ## Technology that will be used
 ## a. IDE: VS Code, VITE, React, Tailwind
 ## b. Database: MongoDB
