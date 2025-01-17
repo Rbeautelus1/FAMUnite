@@ -1,6 +1,6 @@
 # Project
 ## Technology that will be used
-## a. IDE: VS CODe, VITE, React, Tailwind
+## a. IDE: VS Code, VITE, React, Tailwind
 ## b. Database: MongoDB
 ## c. Screen Design: Figma
 ## d. Languages: HTML, CSS, Javascript
