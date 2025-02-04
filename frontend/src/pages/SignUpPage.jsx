@@ -1,14 +1,11 @@
 import { useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
-import { MessageSquare, User, Mail, Lock, Eye, EyeOff } from "lucide-react"; // Ensure correct imports for icons
-import { Link } from "react-router-dom";
-
-import toast from "react-hot-toast"; //for notifications
-
-
-//import AuthImagePattern from "../components/AuthImagePattern";
+import { MessageSquare, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
+import toast from "react-hot-toast"; // Ensure toast is imported
 
 const SignUpPage = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -19,33 +16,32 @@ const SignUpPage = () => {
   const { signup, isSigningUp } = useAuthStore();
 
   const validateForm = () => {
-    // Add your validation logic here if needed
     if (!formData.fullName.trim()) return toast.error("Full name is required");
     if (!formData.email.trim()) return toast.error("Email is required");
     if (!/\S+@\S+\.\S+/.test(formData.email)) return toast.error("Invalid email format");
     if (!formData.password) return toast.error("Password is required");
     if (formData.password.length < 6) return toast.error("Password must be at least 6 characters");
-
-
     return true;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const success = validateForm();
-
-    if (success === true) {
-      signup(formData); // Call signup function from the store
+    if (validateForm()) {
+      try {
+        await signup(formData); // Call signup function
+        toast.success("Account created successfully");
+        navigate("/"); // Redirect to login page
+      } catch (error) {
+        console.error("Signup error:", error);
+      }
     }
   };
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      {/* Left side */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
-          {/* LOGO */}
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -56,9 +52,7 @@ const SignUpPage = () => {
             </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Full Name */}
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Full Name</span>
@@ -72,14 +66,11 @@ const SignUpPage = () => {
                   className="input input-bordered w-full pl-10"
                   placeholder="John Doe"
                   value={formData.fullName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 />
               </div>
             </div>
-            
-            {/* Email */}
+
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Email</span>
@@ -93,15 +84,12 @@ const SignUpPage = () => {
                   className="input input-bordered w-full pl-10"
                   placeholder="you@example.com"
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
-                </div>
-                </div>
-                
-                {/* Password */}
-                <div className="form-control">
+              </div>
+            </div>
+
+            <div className="form-control">
               <label className="label">
                 <span className="label-text font-medium">Password</span>
               </label>
@@ -114,27 +102,19 @@ const SignUpPage = () => {
                   className="input input-bordered w-full pl-10"
                   placeholder="**********"
                   value={formData.password}
-                  onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 />
                 <button
-              type="button"
-              className="absolute inset-y-0 right-0 pr-3 flex items-center"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <EyeOff className="size-5 text-base-content/40" />
-              ) : (
-                <Eye className="size-5 text-base-content/40" />
-
-              )}
-            </button>
-            </div>
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff className="size-5 text-base-content/40" /> : <Eye className="size-5 text-base-content/40" />}
+                </button>
+              </div>
             </div>
 
-          {/* Submit Button */}
-          <button
+            <button
               type="submit"
               className="btn btn-primary w-full"
               disabled={isSigningUp}
@@ -143,22 +123,17 @@ const SignUpPage = () => {
             </button>
           </form>
 
-        {/* Sign In Link*/}
           <div className="text-center">
             <p className="text-base-content/60">
-            Already have an account?{" "}
-            <Link to="/login" className="link link-primary">
-            Sign in
-            </Link>
+              Already have an account?{" "}
+              <Link to="/login" className="link link-primary">
+                Sign in
+              </Link>
             </p>
           </div>
         </div>
       </div>
-
-
-     
     </div>
-    
   );
 };
 
